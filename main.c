@@ -67,7 +67,7 @@ int main()
 			doF321Question1(nums);
 			break;
 		case PROG_MMAP:
-			printf("Now we will run processes that shared memory (mmap) and communicate through ring buffer\n");
+			printf("Now we will run processes that shared memory (mmap) and communicate through cyclic buffer\n");
 			doF321Question2(nums);
 			break;
 		case PROG_THREADS:

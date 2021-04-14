@@ -169,14 +169,14 @@ void doF321Question1(int nums[])
 				parameters[1] = 0;
 				parameters[2] = 0;
 				parameters[0] = 0;
-				write(childPipe[1], parameters, sizeof(int) * 3);
-				wait(NULL);
-				close(parentPipe[0]);
-				close(childPipe[1]);
 				printf("Summary:\n");
 				for(int i = 0; i < total_numbers ; i++)
 					printf("Number = %d --> total iterations = %d \n",values[0][i],values[1][i]);
 
+				write(childPipe[1], parameters, sizeof(int) * 3);
+				wait(NULL);
+				close(parentPipe[0]);
+				close(childPipe[1]);
 				break;
 			}
 			else if (IN < total_numbers && index != total_numbers) //getting the next number if there is a place in the pipe
