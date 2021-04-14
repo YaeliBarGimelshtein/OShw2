@@ -11,7 +11,7 @@
 #define PROG_SEMAPHORE 5
 #define EXIT 6
 
-void menu_prompt(int *choice)
+void menu_prompt(int* choice)
 {
 	printf("HELLO-I'M A BUNNY\n   (\\ /)\n   (•.•)\n   (\")(\")\n");
 	printf("For program 1 (pipes) - press %d\n",PROG_PIPES);
