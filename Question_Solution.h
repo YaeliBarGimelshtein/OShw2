@@ -5,7 +5,7 @@
 
 #define BUF_SIZE 100
 #define PARAMETERS_SIZE 3
-#define NTHREADS 10
+
 
 //all functions
 void init_limit(int num);

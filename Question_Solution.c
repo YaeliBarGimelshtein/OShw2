@@ -417,26 +417,24 @@ void doF321Question2(int nums[])
 
 void doF321Question3(int nums[])
 {
-	pthread_t threads[NTHREADS];
-	int* return_values = (int*)malloc(NTHREADS*sizeof(int));
+	pthread_t threads[total_numbers]; //array of threads
+	int* return_values = (int*)malloc(total_numbers*sizeof(int)); //values[0] = number, values[1] = total iterations
 	if(!return_values)
 	{
 		printf("malloc error\n");
 		return;
-
 	}
-	for (int i = 0; i < NTHREADS; i++)
+	for (int i = 0; i < total_numbers; i++) //creating the threads
 	{
-
 		if(pthread_create(&threads[i],NULL, (void*)doF321_Thread,(int*)&nums[i]) != 0)
 		{
 			fprintf(stderr, "error: Cannot create thread # %d\n", i);
 			exit(EXIT_FAILURE);
 		}
 	}
-	for (int i = 0; i < NTHREADS; i++)
+	for (int i = 0; i < total_numbers; i++)
 	{
-		if (pthread_join(threads[i], (int*)&return_values[i]) != 0)
+		if (pthread_join(threads[i], (int*)&return_values[i]) != 0) //waiting for the threads to finish
 		{
 			fprintf(stderr, "error: Cannot join thread # %d\n", i);
 			exit(EXIT_FAILURE);
@@ -444,62 +442,59 @@ void doF321Question3(int nums[])
 	}
 
 	 printf("Now all threads are done-the results:\n");
-	 for (int i = 0; i < NTHREADS; ++i)
-	 {
+	 for (int i = 0; i < total_numbers; ++i)
 		 printf("number :%d, total iterations: %d\n",nums[i],return_values[i]);
-	 }
-	 free(return_values);
+
+	 free(return_values); //freeing all space allocated
 }
 ///////////////**********************END QUESTION 3 *********************///////////////////////////////////////////
 ///////////////**********************START QUESTION 4 *********************///////////////////////////////////////////
 
 
-void doF321Question4(int nums[]){
+void doF321Question4(int nums[])
+{
+	//values[0] = number, values[1] = total iterations
 	int* returns_values = (int*)mmap(NULL, total_numbers*sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS,0,0);
 	if(returns_values==MAP_FAILED)
 	{
 		printf("Mapping returns_values failed!\n");
 		exit(EXIT_FAILURE);
 	}
-	for(int i = 0; i < total_numbers; i++)
+	for(int i = 0; i < total_numbers; i++) //loop for all processes
 	{
 		pid_t proc_num = fork();
-		if(proc_num == -1)
+		if(proc_num == -1) //checking success of creation
 		{
 			perror("fork failed");
 			exit(EXIT_FAILURE);
-		}if(proc_num == 0)
+		}
+		if(proc_num == 0) //child
 		{
 			int n1 = nums[i];
 			int n = nums[i];
 			int k = 0;
-			 while (1)
-			 {
-				 if (n<= 1)
-				 {
-					 printf("Process for n1 = %d, Number of Iterations: %d\n",n1 ,k);
-					 returns_values[i] = k;
-					 exit(EXIT_SUCCESS);
-				 }
-			        k += 1;
-			        if(n % 2 == 0)
-			        {
-			        	n  = n / 2 ;//# Step A
-			        }else
-			        {
-			        	n = 3 * n + 1;// # step B
-			        }
-			 }
+
+			while (n != 1)
+			{
+				if (n % 2 == 0)
+					n = n/2;
+				else
+					n = n*3 +1;
+
+				k = k + 1;
+			}
+			printf("Process for n1 = %d, Number of Iterations: %d\n",n1 ,k);
+			returns_values[i] = k;
+			exit(EXIT_SUCCESS);
 		}
 	}
-	for(int i = 0; i< total_numbers; i++)
-	{
+
+	for(int i = 0; i< total_numbers; i++) //loop to finish and wait to all processes
 		wait(NULL);
-	}
+
 	for(int i = 0; i< total_numbers; i++)
-	{
 		printf("Number %d, total iterations: %d\n",nums[i],returns_values[i]);
-	}
+
 	int err = munmap(returns_values,total_numbers*sizeof(int));
 	if(err != 0)
 	{
@@ -510,6 +505,7 @@ void doF321Question4(int nums[]){
 }
 ///////////////**********************END QUESTION 4 *********************///////////////////////////////////////////
 ///////////////**********************START QUESTION 5 *********************///////////////////////////////////////////
+
 void doF321Question5(int nums[])
 {
 	//values[0] = index, values[1] = number,values[2] = return values*
@@ -538,27 +534,29 @@ void doF321Question5(int nums[])
 		printf("malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
+
+	//semaphore
 	sem_init(&mutex, 0, 1);
-	pthread_t threads[NTHREADS];
-	for (int i = 0; i < NTHREADS; i++)
+
+	pthread_t threads[total_numbers]; //threads
+	for (int i = 0; i < total_numbers; i++)
 	{
 		*values[1] = nums[i];
 
-		if(pthread_create(&threads[i],NULL, (void*)doF321_Semaphore,(int**)values) != 0)
+		if(pthread_create(&threads[i],NULL, (void*)doF321_Semaphore,(int**)values) != 0) //creating the threads
 		{
 			fprintf(stderr, "error: Cannot create thread # %d\n", i);
 			exit(EXIT_FAILURE);
 		}
 		sleep(1);
 	}
-	for (int i = 0; i < NTHREADS; i++)
-	{
+	for (int i = 0; i < total_numbers; i++) //waiting for all threads to finish
 		pthread_join(threads[i], NULL);
-	}
+
 	for(int i = 0; i< total_numbers; i++)
-	{
 		printf("Number %d, total iterations: %d\n",nums[i],values[2][i]);
-	}
+
+	//free all
 	free(values[0]);
 	free(values[1]);
 	free(values[2]);
