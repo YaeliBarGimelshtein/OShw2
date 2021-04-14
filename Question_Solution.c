@@ -315,11 +315,9 @@ void doF321Question2(int nums[])
 
 				printf("Summary:\n");
 				for(int i = 0; i < total_numbers ; i++)
-				{
 					printf("Number = %d --> total iterations = %d \n",values[0][i],values[1][i]);
 
-				}
-				return;
+				exit(EXIT_SUCCESS);
 			}
 
 			while(parameters[1] %2 == 0)
