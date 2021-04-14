@@ -84,6 +84,7 @@ int main()
 			break;
 		case EXIT:
 			printf("Bye-Bye\n");
+			choice = EXIT;
 			break;
 		default:
 			printf("Invalid choice- Try again\n");
