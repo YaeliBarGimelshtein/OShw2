@@ -61,7 +61,8 @@ int main()
 	int choice = 0;
 	do {
 		menu_prompt(&choice);
-		switch (choice) {
+		switch (choice)
+		{
 		case PROG_PIPES:
 			printf("Now we will run processes that communicate through pipes\n");
 			doF321Question1(nums);
